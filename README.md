@@ -4,8 +4,8 @@ Main language: **C** (STM32/Arduino/ESP32).
 
 ## Our team
 - @ngthvinh08 (Leader)
-- @username1
-- @username2
+- @Dg1924
+- @khanhne
 
 ## Toolchain
 - C (GCC / ARM GCC)
