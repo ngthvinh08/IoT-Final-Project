@@ -1,0 +1,41 @@
+Hiển thị các chỉ số môi trường quan trọng và cung cấp khả năng điều khiển một số thiết bị.
+Sử dụng các widget đo lường (gauge) và widget giá trị số (value display) để hiển thị dữ liệu từ các cảm biến.
+
+Các Chỉ Số Cảm Biến (Dữ liệu đầu vào):
+Temperature (Nhiệt độ):
+Phạm vi: 0 đến 50
+Loại Datastream: Double (V0)
+
+Humidity (Độ ẩm):
+Phạm vi: 0 đến 100
+Loại Datastream: Double (V1)
+
+Water Flood (Mực nước):
+Phạm vi: 0 đến 3
+Loại Datastream: Double (V4)
+
+Gas Level (Mức khí ga):
+Phạm vi: 0 đến 10000
+Loại Datastream: Integer (V2)
+
+Các Thiết Bị Điều Khiển (Dữ liệu đầu ra):
+Servo Door (Cửa Servo): trạng thái servo, loại datastream: Switch (V5)
+
+Buzzer (Còi báo): cảnh báo mức độ khí gas vượt ngưỡng, loại datastream: Switch (V6)
+
+Light 1 (Đèn 1): trạng thái led ngoài cửa ra vào, loại datastream: Switch (V3)
+
+Light 2 (Đèn 2): trạng thái led trong nhà, loại datastream: Switch (V7)
+
+Cấu Hình Sự Kiện & Thông Báo:
+Sự kiện GAS:
+Code: "gas"
+Loại: Warning (Cảnh báo)
+Thông báo: Enabled (Đã bật)
+Mô tả: "Phát hiện khí gas rò rỉ"
+
+Sự kiện WATER:
+Code: "water"
+Loại: Warning (Cảnh báo)
+Thông báo: Enabled (Đã bật)
+Mô tả: "Phát hiện ngập nước"
