@@ -2,7 +2,12 @@
 #include "stdint.h"
 #include "string.h"
 #include "driver.h"
+#include "uart_encoder.h"
+#include "uart_defs.h"
+#include "stm32f1xx_hal_rcc.h"
 
+#define ENCODER_EXAMPLE_MAIN 0
+#define UART_DRIVER_EXAMPLE_MAIN 0
 
 ADC_HandleTypeDef hadc1;
 I2C_HandleTypeDef hi2c1;
@@ -46,8 +51,32 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-	    uint8_t msg[] = "Hello from STM32\r\n";
-	    uart_send(msg, sizeof(msg) - 1);
+    #if ENCODER_EXAMPLE_MAIN == 1
+	    /* Example 1: Send DHT11 (Temperature & Humidity) */
+	    uart_send_dht11_packet(25, 60);  // 25°C, 60% humidity
+	    HAL_Delay(1000);
+	    
+	    /* Example 2: Send MQ2 (Gas sensor) */
+	    uart_send_mq2_packet(500);  // 500 PPM
+	    HAL_Delay(1000);
+	    
+	    /* Example 3: Send Light sensor */
+	    uart_send_light_packet(800);  // 800 lux
+	    HAL_Delay(1000);
+	    
+	    /* Example 4: Send RFID */
+	    uint8_t rfid_id[4] = {0xAB, 0xCD, 0xEF, 0x12};
+	    uart_send_rfid_packet(rfid_id);
+	    HAL_Delay(1000);
+    #endif
+
+    #if UART_DRIVER_EXAMPLE_MAIN == 1
+        /* Example: Receive data via UART and echo back */
+        uint8_t rx_buffer[UART_PACKET_TOTAL_SIZE];
+        uart_receive((char *)rx_buffer, UART_PACKET_TOTAL_SIZE);
+        uart_send(rx_buffer, UART_PACKET_TOTAL_SIZE);
+        HAL_Delay(500);
+    #endif
   }
   /* USER CODE END 3 */
 }
