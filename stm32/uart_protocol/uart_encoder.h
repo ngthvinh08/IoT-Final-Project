@@ -90,4 +90,49 @@ uart_error_t uart_encode_light(uint16_t lux, uart_packet_t* output_packet);
  */
 uart_error_t uart_encode_rfid(const uint8_t* rfid_data, uart_packet_t* output_packet);
 
+/**
+ * ============================================================================
+ * High-Level API with UART Transmission
+ * ============================================================================
+ * 
+ * Các hàm này kết hợp encode + transmit thành một bước
+ * Yêu cầu: driver.h phải cung cấp hàm uart_send()
+ */
+
+/**
+ * @brief Encode and send DHT11 packet over UART
+ * 
+ * @param temperature   Temperature value
+ * @param humidity      Humidity value
+ * @return              Error code
+ * 
+ * Example:
+ *   uart_send_dht11_packet(25, 60);  // Auto encode & send
+ */
+uart_error_t uart_send_dht11_packet(int8_t temperature, uint8_t humidity);
+
+/**
+ * @brief Encode and send MQ2 packet over UART
+ */
+uart_error_t uart_send_mq2_packet(uint16_t ppm);
+
+/**
+ * @brief Encode and send Light packet over UART
+ */
+uart_error_t uart_send_light_packet(uint16_t lux);
+
+/**
+ * @brief Encode and send RFID packet over UART
+ */
+uart_error_t uart_send_rfid_packet(const uint8_t* rfid_data);
+
+/**
+ * @brief Generic encode and send function
+ * 
+ * @param msg_type      Message type (UART_MSG_*)
+ * @param payload       7-byte payload
+ * @return              Error code
+ */
+uart_error_t uart_send_packet(uint8_t msg_type, const uint8_t* payload);
+
 #endif /* __UART_ENCODER_H */

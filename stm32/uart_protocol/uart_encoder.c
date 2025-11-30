@@ -1,5 +1,6 @@
 #include "uart_encoder.h"
 #include <string.h>
+#include "driver.h"
 
 
 /**
@@ -167,4 +168,95 @@ uart_error_t uart_encode_rfid(const uint8_t* rfid_data, uart_packet_t* output_pa
 
     /* Encode using generic function */
     return uart_encode_packet(UART_MSG_RFID, payload, output_packet);
+}
+
+/**
+ * ============================================================================
+ * High-Level API with UART Transmission
+ * ============================================================================
+ */
+
+uart_error_t uart_send_packet(uint8_t msg_type, const uint8_t* payload)
+{
+    uart_packet_t packet;
+    uart_error_t err;
+
+    /* Encode packet */
+    err = uart_encode_packet(msg_type, payload, &packet);
+    if (err != UART_ENCODE_OK) {
+        return err;
+    }
+
+    /* Send via UART driver */
+    uart_send((uint8_t*)&packet, UART_PACKET_TOTAL_SIZE);
+
+    return UART_ENCODE_OK;
+}
+
+uart_error_t uart_send_dht11_packet(int8_t temperature, uint8_t humidity)
+{
+    uart_packet_t packet;
+    uart_error_t err;
+
+    /* Encode DHT11 packet */
+    err = uart_encode_dht11(temperature, humidity, &packet);
+    if (err != UART_ENCODE_OK) {
+        return err;
+    }
+
+    /* Send via UART driver */
+    uart_send((uint8_t*)&packet, UART_PACKET_TOTAL_SIZE);
+
+    return UART_ENCODE_OK;
+}
+
+uart_error_t uart_send_mq2_packet(uint16_t ppm)
+{
+    uart_packet_t packet;
+    uart_error_t err;
+
+    /* Encode MQ2 packet */
+    err = uart_encode_mq2(ppm, &packet);
+    if (err != UART_ENCODE_OK) {
+        return err;
+    }
+
+    /* Send via UART driver */
+    uart_send((uint8_t*)&packet, UART_PACKET_TOTAL_SIZE);
+
+    return UART_ENCODE_OK;
+}
+
+uart_error_t uart_send_light_packet(uint16_t lux)
+{
+    uart_packet_t packet;
+    uart_error_t err;
+
+    /* Encode Light packet */
+    err = uart_encode_light(lux, &packet);
+    if (err != UART_ENCODE_OK) {
+        return err;
+    }
+
+    /* Send via UART driver */
+    uart_send((uint8_t*)&packet, UART_PACKET_TOTAL_SIZE);
+
+    return UART_ENCODE_OK;
+}
+
+uart_error_t uart_send_rfid_packet(const uint8_t* rfid_data)
+{
+    uart_packet_t packet;
+    uart_error_t err;
+
+    /* Encode RFID packet */
+    err = uart_encode_rfid(rfid_data, &packet);
+    if (err != UART_ENCODE_OK) {
+        return err;
+    }
+
+    /* Send via UART driver */
+    uart_send((uint8_t*)&packet, UART_PACKET_TOTAL_SIZE);
+
+    return UART_ENCODE_OK;
 }

@@ -6,12 +6,10 @@
 
 
 /* ========== Packet Constants ========== */
-#define UART_PACKET_LENGTH_SIZE     2   /* Length field size in bytes */
-#define UART_PACKET_DATA_SIZE       8   /* Data field size in bytes */
-#define UART_PACKET_CRC_SIZE        2   /* CRC field size in bytes */
-#define UART_PACKET_TOTAL_SIZE      (UART_PACKET_LENGTH_SIZE + UART_PACKET_DATA_SIZE + UART_PACKET_CRC_SIZE)  /* Total: 12 bytes */
-
-/* Fixed length value (always 0x0008 for 8 bytes of data) */
+#define UART_PACKET_LENGTH_SIZE     2   
+#define UART_PACKET_DATA_SIZE       8   
+#define UART_PACKET_CRC_SIZE        2   
+#define UART_PACKET_TOTAL_SIZE      (UART_PACKET_LENGTH_SIZE + UART_PACKET_DATA_SIZE + UART_PACKET_CRC_SIZE)  
 #define UART_DATA_LENGTH_VALUE      UART_PACKET_DATA_SIZE
 
 /* ========== Message Types / Sensor IDs ========== */
@@ -35,15 +33,15 @@ typedef enum {
 
 /* ========== Packet Structure ========== */
 typedef struct {
-    uint8_t length[2];      /* Length field (2 bytes, little-endian) */
-    uint8_t data[8];        /* Data payload (8 bytes) */
-    uint8_t crc[2];         /* CRC16-CCITT (2 bytes, little-endian) */
-} fuart_packet_t;
+    uint8_t length[UART_PACKET_LENGTH_SIZE];      
+    uint8_t data[UART_PACKET_DATA_SIZE];        
+    uint8_t crc[UART_PACKET_CRC_SIZE];         
+} uart_packet_t;
 
 /* ========== Message Payload Structure (8 bytes) ========== */
 typedef struct {
-    uint8_t msg_type;       /* Index 0: Message type (sensor ID) */
-    uint8_t payload[7];     /* Index 1-7: Payload data */
+    uint8_t msg_type;       
+    uint8_t payload[7];     // Index 1-7: Payload data 
 } uart_message_t;
 
 #endif /* __UART_DEFS_H */
