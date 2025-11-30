@@ -17,9 +17,10 @@ static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 
+
 // Uart drivers
-void uart_send (const char *msg) {
-    HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+void uart_send (uint8_t *msg, uint16_t len) {
+    HAL_UART_Transmit(&huart1, (uint8_t *)msg, len, HAL_MAX_DELAY);
 }
 
 void uart_receive (char *buffer, uint16_t size) {
@@ -45,8 +46,8 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-      uart_send ("Hello from UART!\r\n");
-      HAL_Delay(1000);
+	    uint8_t msg[] = "Hello from STM32\r\n";
+	    uart_send(msg, sizeof(msg) - 1);
   }
   /* USER CODE END 3 */
 }
