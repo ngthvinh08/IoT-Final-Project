@@ -38,4 +38,4 @@ Sự kiện WATER:
 Code: "water"
 Loại: Warning (Cảnh báo)
 Thông báo: Enabled (Đã bật)
-Mô tả: "Phát hiện ngập nước"
+Mô tả: "Phát hiện ngập nước"  

@@ -1,1 +1,0 @@
-Final source code folder for ESP32 side
