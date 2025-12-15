@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Chống Lũ IoT</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --text-color: #e94560;
+            --accent-color: #0f3460;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --text-light: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 { 
+            margin-bottom: 30px; 
+            color: var(--text-color); 
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 { 
+            margin-top: 0; 
+            font-size: 1.2rem; 
+            color: #a29bfe; 
+            margin-bottom: 15px;
+        }
+
+        .value-box {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--text-light);
+        }
+
+        .unit { 
+            font-size: 1.2rem; 
+            color: #ccc; 
+            margin-left: 5px;
+        }
+
+        /* Trạng thái hệ thống */
+        #status-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            background: #2d3436; /* Màu mặc định */
+            text-transform: uppercase;
+        }
+
+        /* Nút điều khiển */
+        .control-panel {
+            margin-top: 30px;
+            padding: 30px;
+            background: var(--accent-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 940px;
+            box-sizing: border-box;
+        }
+
+        .control-panel h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        .btn-up { background-color: var(--success); box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4); }
+        .btn-up:hover { background-color: #00a383; }
+
+        .btn-down { background-color: var(--warning); color: #2d3436; box-shadow: 0 4px 15px rgba(253, 203, 110, 0.4); }
+        .btn-down:hover { background-color: #e1b12c; }
+
+        .btn-reset { background-color: var(--danger); box-shadow: 0 4px 15px rgba(214, 48, 49, 0.4); }
+        .btn-reset:hover { background-color: #c0392b; }
+
+        .sensor-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--text-color); }
+        
+        /* Hiệu ứng cảnh báo */
+        .alert-active {
+            animation: blinkRed 1s infinite;
+            background-color: var(--danger) !important;
+            color: white !important;
+        }
+
+        .safe-active {
+            background-color: var(--success) !important;
+            color: white !important;
+        }
+
+        @keyframes blinkRed {
+            0% { opacity: 1; box-shadow: 0 0 10px var(--danger); }
+            50% { opacity: 0.7; box-shadow: 0 0 20px var(--danger); }
+            100% { opacity: 1; box-shadow: 0 0 10px var(--danger); }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1><i class="fas fa-house-flood-water"></i> HỆ THỐNG GIÁM SÁT & CHỐNG LŨ</h1>
+
+    <div class="container">
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>TRẠNG THÁI HỆ THỐNG</h2>
+            <div id="status-text">Đang kết nối...</div>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-temperature-high sensor-icon"></i>
+            <h2>Nhiệt Độ</h2>
+            <div class="value-box"><span id="temp">--</span> <span class="unit">°C</span></div>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-droplet sensor-icon"></i>
+            <h2>Độ Ẩm</h2>
+            <div class="value-box"><span id="hum">--</span> <span class="unit">%</span></div>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-wind sensor-icon"></i>
+            <h2>Nồng độ Gas</h2>
+            <div class="value-box"><span id="gas">--</span> <span class="unit">Val</span></div>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-water sensor-icon"></i>
+            <h2>Mực Nước</h2>
+            <div class="value-box"><span id="water">--</span> <span class="unit">Val</span></div>
+        </div>
+        
+        <div class="card">
+            <i class="fas fa-robot sensor-icon"></i>
+            <h2>Góc Chắn Lũ</h2>
+            <div class="value-box"><span id="servo">--</span> <span class="unit">Độ</span></div>
+        </div>
+        
+        <div class="card">
+            <i class="fas fa-person-walking sensor-icon"></i>
+            <h2>Chuyển Động</h2>
+            <div class="value-box" style="font-size: 1.5rem;"><span id="motion">--</span></div>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <h2><i class="fas fa-gamepad"></i> ĐIỀU KHIỂN TỪ XA</h2>
+        <div class="btn-group">
+            <button class="btn-up" onclick="sendCommand(1)">
+                <i class="fas fa-arrow-up"></i> NÂNG CHẮN
+            </button>
+            <button class="btn-down" onclick="sendCommand(2)">
+                <i class="fas fa-arrow-down"></i> HẠ CHẮN
+            </button>
+            <button class="btn-reset" onclick="sendCommand(3)">
+                <i class="fas fa-redo"></i> RESET HỆ THỐNG
+            </button>
+        </div>
+    </div>
+    
+    <div class="footer">IoT Project Dashboard - Firebase Realtime Database</div>
+
+    <script type="module">
+        // Import thư viện Firebase từ CDN (Để chạy trực tiếp trên trình duyệt)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set } 
+        from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        // --- CẤU HÌNH FIREBASE CỦA BẠN ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5GdJpxPJzuwCuyax6jpIk-_YtfxlOxuw",
+            authDomain: "iotprj-537a3.firebaseapp.com",
+            databaseURL: "https://iotprj-537a3-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "iotprj-537a3",
+            storageBucket: "iotprj-537a3.firebasestorage.app",
+            messagingSenderId: "763414029810",
+            appId: "1:763414029810:web:87f7f84f95ed2dc574b76b",
+            measurementId: "G-YD5LRNRTJ8"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        console.log("Firebase initialized");
+
+        // --- 1. ĐỌC DỮ LIỆU TỪ FIREBASE (REALTIME) ---
+        // Lắng nghe thay đổi tại nhánh '/monitor'
+        const monitorRef = ref(db, 'monitor');
+        
+        onValue(monitorRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                console.log("Data received:", data);
+                
+                // Cập nhật số liệu lên giao diện
+                // Lưu ý: Tên biến data.xxx phải khớp với tên trong code ESP32 (json.set)
+                document.getElementById('temp').innerText = data.temp ? data.temp.toFixed(1) : "--";
+                document.getElementById('hum').innerText = data.hum ? data.hum.toFixed(1) : "--";
+                document.getElementById('gas').innerText = data.gas_val;
+                document.getElementById('water').innerText = data.water1;
+                document.getElementById('servo').innerText = data.servo_angle;
+                
+                // Cập nhật chuyển động
+                const motionText = data.led_motion == 1 ? "PHÁT HIỆN" : "KHÔNG";
+                const motionEl = document.getElementById('motion');
+                motionEl.innerText = motionText;
+                motionEl.style.color = data.led_motion == 1 ? "#fdcb6e" : "#fff";
+
+                // Cập nhật Trạng thái và Màu sắc cảnh báo
+                const statusBox = document.getElementById('status-text');
+                statusBox.innerText = data.status || "Hoạt động";
+
+                // Logic đổi màu nền Status
+                if (data.status && (data.status.includes("LŨ") || data.status.includes("GAS"))) {
+                    statusBox.className = "alert-active";
+                } else {
+                    statusBox.className = "safe-active";
+                }
+            }
+        }, (error) => {
+            console.error("Lỗi đọc dữ liệu:", error);
+            document.getElementById('status-text').innerText = "Lỗi kết nối!";
+        });
+
+        // --- 2. GỬI LỆNH ĐIỀU KHIỂN ---
+        // Gắn hàm sendCommand vào window để HTML gọi được
+        window.sendCommand = function(cmdCode) {
+            // Ghi giá trị vào nhánh 'control/cmd'
+            set(ref(db, 'control/cmd'), cmdCode)
+            .then(() => {
+                console.log("Đã gửi lệnh thành công: " + cmdCode);
+                alert("Đã gửi lệnh!"); // Thông báo nhỏ để biết đã bấm ăn
+            })
+            .catch((error) => {
+                console.error("Lỗi gửi lệnh:", error);
+                alert("Lỗi: " + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
