@@ -7,12 +7,15 @@ Main language: **C** (STM32/Arduino/ESP32).
 - @ngthvinh08 (Leader)
 - @Dg1924
 - @khanhne
+- @pildfilo
 
 ## Toolchain
 - C (GCC / ARM GCC)
 - STM32CubeIDE (Keil / PlatformIO / Arduino IDE)
-- MQTT protocol
+- ESP32
+- Google Firebase
 - GitHub Actions (CI)
+- Web UI Dashboard
 
 
 
