@@ -1,109 +1,99 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.1); /* Màu trắng rất mờ */
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --success: #00b894;
+    --danger: #d63031;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e1e; /* Nền tối */
-    color: #ffffff; /* Chữ trắng */
     margin: 0;
     padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-}
-
-.dashboard {
-    width: 100%;
-    max-width: 900px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Bố cục lưới responsive */
-    gap: 20px;
-}
-
-h1 {
-    grid-column: 1 / -1; /* Tiêu đề chiếm hết chiều rộng */
-    text-align: center;
-    color: #4CAF50;
-    margin-bottom: 30px;
-}
-
-.sensor-card, .device-card {
-    background-color: #2c2c2c;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Dùng ảnh nền đẹp để thấy rõ hiệu ứng trong suốt */
+    background: linear-gradient(135deg, #1e1e2f 0%, #4e54c8 100%);
+    min-height: 100vh;
+}
+
+h1 { margin-bottom: 30px; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* HIỆU ỨNG TRONG SUỐT CHO CARD */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px); /* Làm mờ nền sau card */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px;
     text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
 }
 
-.reading {
-    font-size: 3em;
-    font-weight: bold;
-    color: #f1c40f; /* Màu nhấn cho chỉ số */
-    margin-top: 10px;
+.card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
 }
 
-.status {
-    margin-top: 15px;
-    font-weight: bold;
-    color: #4CAF50; /* Màu xanh lá cho trạng thái Bật/Hoạt động */
+.card h2 { font-size: 0.9rem; opacity: 0.8; color: #fff; margin-bottom: 15px; }
+.value-box { font-size: 2.5rem; font-weight: bold; }
+.unit { font-size: 1rem; opacity: 0.6; }
+
+/* Control Panel */
+.control-panel {
+    margin-top: 30px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 25px;
+    width: 100%;
+    max-width: 940px;
 }
 
-/* Kiểu cho nút chuyển đổi (Toggle Switch) */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-.switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-}
-input:checked + .slider {
-    background-color: #4CAF50;
-}
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-.slider.round {
-    border-radius: 34px;
-}
-.slider.round:before {
-    border-radius: 50%;
-}
-
-#fan-speed-btn {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
+button {
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 1em;
-    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: 0.2s;
 }
-#fan-speed-btn:hover {
-    background-color: #2980b9;
+
+button:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
+
+/* Icon colors */
+.icon-temp { color: #ff7675; font-size: 2rem; }
+.icon-hum { color: #74b9ff; font-size: 2rem; }
+.icon-gas { color: #ffeaa7; font-size: 2rem; }
+.icon-water { color: #55efc4; font-size: 2rem; }
+.icon-led { color: #fdcb6e; font-size: 2rem; }
+
+/* Status Text */
+#status-text {
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+.safe-active { background: rgba(0, 184, 148, 0.3); border: 1px solid var(--success); }
+.alert-active { background: rgba(214, 48, 49, 0.3); border: 1px solid var(--danger); animation: blink 1s infinite; }
+
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }

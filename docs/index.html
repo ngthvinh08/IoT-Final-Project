@@ -1,249 +1,160 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeX Dashboard</title>
+    <title>HomeX | Monitoring & Control Dashboard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-color: #1a1a2e;
-            --card-bg: #16213e;
-            --text-color: #e94560;
-            --accent-color: #0f3460;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
             --success: #00b894;
             --warning: #fdcb6e;
             --danger: #d63031;
-            --text-light: #ffffff;
+            --info: #0984e3;
+            --purple: #6c5ce7;
+            --orange: #e67e22;
         }
 
         body {
+            margin: 0; padding: 20px;
             font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-light);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            color: var(--text-color);
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            background: linear-gradient(135deg, #1e1e2f 0%, #2d3436 100%);
+            background-attachment: fixed;
         }
 
-        h1 { 
-            margin-bottom: 30px; 
-            color: var(--text-color); 
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+        h1 { margin-top: 20px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: #ffffff; }
 
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
+            gap: 20px; width: 100%; max-width: 1100px;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            text-align: center;
-            transition: transform 0.3s ease;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 25px;
+            text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+        .card:hover { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.4); }
+        .status-card { grid-column: 1 / -1; }
+        .card h2 { font-size: 0.9rem; text-transform: uppercase; opacity: 0.8; margin-bottom: 15px; }
+        .value-box { font-size: 2.8rem; font-weight: 700; margin: 10px 0; }
+        .unit { font-size: 1.1rem; opacity: 0.6; margin-left: 5px; }
+        .sensor-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
 
-        .card h2 { 
-            margin-top: 0; 
-            font-size: 1.2rem; 
-            color: #a29bfe; 
-            margin-bottom: 15px;
-        }
+        #status-text { font-size: 1.5rem; font-weight: bold; padding: 12px; border-radius: 12px; }
+        .safe-active { background: rgba(0, 184, 148, 0.2); border: 1px solid var(--success); color: var(--success); }
+        .alert-active { background: rgba(214, 48, 49, 0.3); border: 1px solid var(--danger); color: #fff; animation: blink 1s infinite; }
 
-        .value-box {
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--text-light);
-        }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        .unit { 
-            font-size: 1.2rem; 
-            color: #ccc; 
-            margin-left: 5px;
-        }
-
-        /* Trạng thái hệ thống */
-        #status-text {
-            font-size: 1.8rem;
-            font-weight: bold;
-            padding: 15px;
-            border-radius: 10px;
-            background: #2d3436; /* Màu mặc định */
-            text-transform: uppercase;
-        }
-
-        /* Nút điều khiển */
         .control-panel {
-            margin-top: 30px;
-            padding: 30px;
-            background: var(--accent-color);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 940px;
-            box-sizing: border-box;
+            margin-top: 30px; padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px; border: 1px solid var(--glass-border);
+            width: 100%; max-width: 1000px; box-sizing: border-box;
         }
 
-        .control-panel h2 {
-            text-align: center;
-            margin-top: 0;
-            color: #fff;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 160px;
-            justify-content: center;
-        }
-
-        button:active { transform: scale(0.95); }
-
-        .btn-up { background-color: var(--success); box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4); }
-        .btn-up:hover { background-color: #00a383; }
-
-        .btn-down { background-color: var(--warning); color: #2d3436; box-shadow: 0 4px 15px rgba(253, 203, 110, 0.4); }
-        .btn-down:hover { background-color: #e1b12c; }
-
-        .btn-reset { background-color: var(--danger); box-shadow: 0 4px 15px rgba(214, 48, 49, 0.4); }
-        .btn-reset:hover { background-color: #c0392b; }
-
-        .sensor-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--text-color); }
+        .btn-group { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
         
-        /* Hiệu ứng cảnh báo */
-        .alert-active {
-            animation: blinkRed 1s infinite;
-            background-color: var(--danger) !important;
-            color: white !important;
+        button {
+            padding: 12px 20px; border: none; border-radius: 12px;
+            font-size: 0.9rem; font-weight: bold; cursor: pointer;
+            color: white; display: flex; align-items: center; gap: 8px;
+            min-width: 160px; justify-content: center; transition: 0.2s;
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .safe-active {
-            background-color: var(--success) !important;
-            color: white !important;
-        }
+        button:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .btn-up { border-left: 5px solid var(--success); }
+        .btn-down { border-left: 5px solid var(--warning); }
+        .btn-reset { border-left: 5px solid var(--danger); }
+        .btn-ota { border-left: 5px solid var(--purple); }
+        .btn-led { border-left: 5px solid var(--info); }
+        .btn-buzzer { border-left: 5px solid var(--orange); }
 
-        @keyframes blinkRed {
-            0% { opacity: 1; box-shadow: 0 0 10px var(--danger); }
-            50% { opacity: 0.7; box-shadow: 0 0 20px var(--danger); }
-            100% { opacity: 1; box-shadow: 0 0 10px var(--danger); }
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            color: #636e72;
-            font-size: 0.9rem;
-        }
+        .footer { margin: 40px 0; opacity: 0.4; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <h1><i class="fas fa-house-flood-water"></i> HỆ THỐNG GIÁM SÁT & CHỐNG LŨ</h1>
+    <h1><i class="fas fa-microchip"></i> HomeX Monitor & Control</h1>
 
     <div class="container">
-        <div class="card" style="grid-column: 1 / -1;">
-            <h2>TRẠNG THÁI HỆ THỐNG</h2>
-            <div id="status-text">Đang kết nối...</div>
+        <div class="card status-card">
+            <h2>Current System State</h2>
+            <div id="status-text" class="safe-active">INITIALIZING...</div>
         </div>
 
         <div class="card">
-            <i class="fas fa-temperature-high sensor-icon"></i>
-            <h2>Nhiệt Độ</h2>
-            <div class="value-box"><span id="temp">--</span> <span class="unit">°C</span></div>
+            <i class="fas fa-thermometer-half sensor-icon" style="color: #ff7675;"></i>
+            <h2>Temperature</h2>
+            <div class="value-box"><span id="temp-val">--</span><span class="unit">°C</span></div>
         </div>
 
         <div class="card">
-            <i class="fas fa-droplet sensor-icon"></i>
-            <h2>Độ Ẩm</h2>
-            <div class="value-box"><span id="hum">--</span> <span class="unit">%</span></div>
+            <i class="fas fa-tint sensor-icon" style="color: #74b9ff;"></i>
+            <h2>Humidity</h2>
+            <div class="value-box"><span id="hum-val">--</span><span class="unit">%</span></div>
         </div>
 
         <div class="card">
-            <i class="fas fa-wind sensor-icon"></i>
-            <h2>Nồng độ Gas</h2>
-            <div class="value-box"><span id="gas">--</span> <span class="unit">Val</span></div>
+            <i class="fas fa-smog sensor-icon" style="color: #ffeaa7;"></i>
+            <h2>Gas Level</h2>
+            <div class="value-box"><span id="gas-val">--</span><span class="unit">ppm</span></div>
         </div>
 
         <div class="card">
-            <i class="fas fa-water sensor-icon"></i>
-            <h2>Mực Nước</h2>
-            <div class="value-box"><span id="water">--</span> <span class="unit">Val</span></div>
+            <i class="fas fa-water sensor-icon" style="color: #55efc4;"></i>
+            <h2>Water Level 1</h2>
+            <div class="value-box"><span id="water1-val">--</span><span class="unit">val</span></div>
         </div>
-        
+
         <div class="card">
-            <i class="fas fa-robot sensor-icon"></i>
-            <h2>Góc Chắn Lũ</h2>
-            <div class="value-box"><span id="servo">--</span> <span class="unit">Độ</span></div>
+            <i class="fas fa-gauge-high sensor-icon" style="color: #a29bfe;"></i>
+            <h2>Gate Angle</h2>
+            <div class="value-box"><span id="servo-val">--</span><span class="unit">°</span></div>
         </div>
-        
+
         <div class="card">
-            <i class="fas fa-person-walking sensor-icon"></i>
-            <h2>Chuyển Động</h2>
-            <div class="value-box" style="font-size: 1.5rem;"><span id="motion">--</span></div>
+            <i class="fas fa-lightbulb sensor-icon" style="color: #fdcb6e;"></i>
+            <h2>Motion LED</h2>
+            <div class="value-box" style="font-size: 1.5rem;"><span id="led-stt">--</span></div>
         </div>
     </div>
 
     <div class="control-panel">
-        <h2><i class="fas fa-gamepad"></i> ĐIỀU KHIỂN TỪ XA</h2>
+        <h2 style="text-align: center; margin: 0; opacity: 0.9;">REMOTE OPERATIONS</h2>
         <div class="btn-group">
-            <button class="btn-up" onclick="sendCommand(1)">
-                <i class="fas fa-arrow-up"></i> NÂNG CHẮN
-            </button>
-            <button class="btn-down" onclick="sendCommand(2)">
-                <i class="fas fa-arrow-down"></i> HẠ CHẮN
-            </button>
-            <button class="btn-reset" onclick="sendCommand(3)">
-                <i class="fas fa-redo"></i> RESET HỆ THỐNG
-            </button>
+            <button class="btn-up" onclick="sendCommand(1)"><i class="fas fa-arrow-up"></i> OPEN GATE (1)</button>
+            <button class="btn-down" onclick="sendCommand(2)"><i class="fas fa-arrow-down"></i> CLOSE GATE (2)</button>
+            <button class="btn-reset" onclick="sendCommand(3)"><i class="fas fa-sync-alt"></i> RESET (3)</button>
+            <button class="btn-ota" onclick="sendCommand(4)"><i class="fas fa-upload"></i> OTA UPDATE (4)</button>
+            <button class="btn-led" onclick="sendCommand(5)"><i class="fas fa-power-off"></i> LIGHT (5)</button>
+            <button class="btn-buzzer" onclick="sendCommand(6)"><i class="fas fa-volume-up"></i> BUZZER (6)</button>
         </div>
     </div>
-    
-    <div class="footer">IoT Project Dashboard - Firebase Realtime Database</div>
+
+    <div class="footer">Smart IoT Solution - Monitor & Control Dashboard</div>
 
     <script type="module">
-        // Import thư viện Firebase từ CDN (Để chạy trực tiếp trên trình duyệt)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue, set } 
-        from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // --- CẤU HÌNH FIREBASE CỦA BẠN ---
         const firebaseConfig = {
             apiKey: "AIzaSyD5GdJpxPJzuwCuyax6jpIk-_YtfxlOxuw",
             authDomain: "iotprj-537a3.firebaseapp.com",
@@ -251,68 +162,42 @@
             projectId: "iotprj-537a3",
             storageBucket: "iotprj-537a3.firebasestorage.app",
             messagingSenderId: "763414029810",
-            appId: "1:763414029810:web:87f7f84f95ed2dc574b76b",
-            measurementId: "G-YD5LRNRTJ8"
+            appId: "1:763414029810:web:87f7f84f95ed2dc574b76b"
         };
 
-        // Khởi tạo Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        console.log("Firebase initialized");
-
-        // --- 1. ĐỌC DỮ LIỆU TỪ FIREBASE (REALTIME) ---
-        // Lắng nghe thay đổi tại nhánh '/monitor'
-        const monitorRef = ref(db, 'monitor');
-        
-        onValue(monitorRef, (snapshot) => {
+        // Monitoring: Listen to "/monitor" branch from ESP32
+        onValue(ref(db, 'monitor'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                console.log("Data received:", data);
+                // Mapping keys exactly as your ESP32 code: temp, hum, gas_val, water1, servo_angle, led_motion, status
+                document.getElementById('temp-val').innerText = data.temp !== undefined ? data.temp.toFixed(1) : "--";
+                document.getElementById('hum-val').innerText = data.hum !== undefined ? data.hum.toFixed(1) : "--";
+                document.getElementById('gas-val').innerText = data.gas_val !== undefined ? data.gas_val : "0";
+                document.getElementById('water1-val').innerText = data.water1 !== undefined ? data.water1 : "0";
+                document.getElementById('servo-val').innerText = data.servo_angle !== undefined ? data.servo_angle : "0";
                 
-                // Cập nhật số liệu lên giao diện
-                // Lưu ý: Tên biến data.xxx phải khớp với tên trong code ESP32 (json.set)
-                document.getElementById('temp').innerText = data.temp ? data.temp.toFixed(1) : "--";
-                document.getElementById('hum').innerText = data.hum ? data.hum.toFixed(1) : "--";
-                document.getElementById('gas').innerText = data.gas_val;
-                document.getElementById('water').innerText = data.water1;
-                document.getElementById('servo').innerText = data.servo_angle;
-                
-                // Cập nhật chuyển động
-                const motionText = data.led_motion == 1 ? "PHÁT HIỆN" : "KHÔNG";
-                const motionEl = document.getElementById('motion');
-                motionEl.innerText = motionText;
-                motionEl.style.color = data.led_motion == 1 ? "#fdcb6e" : "#fff";
+                const ledEl = document.getElementById('led-stt');
+                ledEl.innerText = data.led_motion == 1 ? "ON / MOTION" : "OFF / IDLE";
+                ledEl.style.color = data.led_motion == 1 ? "#fdcb6e" : "#fff";
 
-                // Cập nhật Trạng thái và Màu sắc cảnh báo
                 const statusBox = document.getElementById('status-text');
-                statusBox.innerText = data.status || "Hoạt động";
-
-                // Logic đổi màu nền Status
-                if (data.status && (data.status.includes("LŨ") || data.status.includes("GAS"))) {
+                statusBox.innerText = data.status || "NORMAL";
+                
+                // Color switching based on status message
+                if (data.status && data.status !== "Normal") {
                     statusBox.className = "alert-active";
                 } else {
                     statusBox.className = "safe-active";
                 }
             }
-        }, (error) => {
-            console.error("Lỗi đọc dữ liệu:", error);
-            document.getElementById('status-text').innerText = "Lỗi kết nối!";
         });
 
-        // --- 2. GỬI LỆNH ĐIỀU KHIỂN ---
-        // Gắn hàm sendCommand vào window để HTML gọi được
+        // Controlling: Update "/control/cmd" for ESP32 to read
         window.sendCommand = function(cmdCode) {
-            // Ghi giá trị vào nhánh 'control/cmd'
-            set(ref(db, 'control/cmd'), cmdCode)
-            .then(() => {
-                console.log("Đã gửi lệnh thành công: " + cmdCode);
-                alert("Đã gửi lệnh!"); // Thông báo nhỏ để biết đã bấm ăn
-            })
-            .catch((error) => {
-                console.error("Lỗi gửi lệnh:", error);
-                alert("Lỗi: " + error.message);
-            });
+            set(ref(db, 'control/cmd'), cmdCode);
         }
     </script>
 </body>
