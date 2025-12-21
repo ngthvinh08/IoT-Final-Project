@@ -209,6 +209,7 @@ FirebaseConfig config;
 
 WiFiUDP udp;
 const int udpPort = 4210;
+
 IPAddress sensorIP;
 bool sensorConnected = false;
 
@@ -271,6 +272,7 @@ void setup() {
 
 
   WiFiManager wm;
+  wm.resetSettings(); 
   bool res = wm.autoConnect("GATEWAY_CONFIG", "12345678");
   if(!res) { Serial.println("Ket noi that bai. Restarting..."); ESP.restart(); }
   else { Serial.println("WiFiManager connected!"); }

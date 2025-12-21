@@ -9,8 +9,8 @@
 const char *ssid = "ESP32_GATEWAY";
 const char *password = "12345678";
 const char *udpAddress = "192.168.4.1";
-const int udpPort = 4210;
 
+const int udpPort = 4210;
 WiFiUDP udp;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -86,7 +86,6 @@ void setup()
 
   lcd.init();
   lcd.backlight();
-
   myServo.attach(servo1);
   pinMode(water_sensor_1, INPUT);
   pinMode(move_sensor, INPUT);
