@@ -201,6 +201,8 @@ const char *pass_ap = "12345678";
 #define FIREBASE_HOST "iotprj-537a3-default-rtdb.asia-southeast1.firebasedatabase.app"
 #define FIREBASE_AUTH "F824sV1vzGRd5eUfRs7qqAPRckRbGunYuFkGvn6w"
 
+#define RESET_AP_CONFIG 1
+
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -272,7 +274,11 @@ void setup() {
 
 
   WiFiManager wm;
+
+  #if RESET_AP_CONFIG 
   wm.resetSettings(); 
+  #endif
+
   bool res = wm.autoConnect("GATEWAY_CONFIG", "12345678");
   if(!res) { Serial.println("Ket noi that bai. Restarting..."); ESP.restart(); }
   else { Serial.println("WiFiManager connected!"); }
@@ -369,7 +375,6 @@ void checkFirebaseCommand() {
 
 void loop() {
   server.handleClient(); 
-
 
   int packetSize = udp.parsePacket();
   if (packetSize == sizeof(myData)) {
